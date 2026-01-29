@@ -1,0 +1,317 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+/* 
+  Markdown Editor Design System
+  Theme: Sophisticated dark with warm amber accents
+*/
+
+@layer base {
+  :root {
+    --background: 220 14% 10%;
+    --foreground: 40 20% 95%;
+
+    --card: 220 14% 12%;
+    --card-foreground: 40 20% 95%;
+
+    --popover: 220 14% 12%;
+    --popover-foreground: 40 20% 95%;
+
+    --primary: 38 92% 50%;
+    --primary-foreground: 220 14% 10%;
+
+    --secondary: 220 14% 16%;
+    --secondary-foreground: 40 20% 90%;
+
+    --muted: 220 14% 18%;
+    --muted-foreground: 220 10% 55%;
+
+    --accent: 38 92% 50%;
+    --accent-foreground: 220 14% 10%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 40 20% 95%;
+
+    --border: 220 14% 20%;
+    --input: 220 14% 18%;
+    --ring: 38 92% 50%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens for markdown editor */
+    --editor-bg: 220 14% 8%;
+    --preview-bg: 220 14% 11%;
+    --toolbar-bg: 220 14% 13%;
+    --code-bg: 220 14% 6%;
+    --highlight: 38 92% 50%;
+    --highlight-muted: 38 60% 20%;
+
+    /* Typography */
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Inter', system-ui, sans-serif;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -2px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -4px hsl(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+
+  .dark {
+    --background: 220 14% 10%;
+    --foreground: 40 20% 95%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: var(--font-sans);
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--editor-bg));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+@layer components {
+  /* Editor textarea styling */
+  .editor-textarea {
+    @apply w-full h-full resize-none border-0 outline-none;
+    background: hsl(var(--editor-bg));
+    color: hsl(var(--foreground));
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.7;
+    padding: 1.5rem;
+    caret-color: hsl(var(--primary));
+  }
+
+  .editor-textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .editor-textarea:focus {
+    outline: none;
+  }
+
+  /* Preview panel markdown styles */
+  .markdown-preview {
+    @apply p-6 overflow-auto;
+    background: hsl(var(--preview-bg));
+    font-family: var(--font-sans);
+    color: hsl(var(--foreground));
+    line-height: 1.8;
+  }
+
+  .markdown-preview h1 {
+    @apply text-3xl font-bold mt-0 mb-4 pb-2;
+    border-bottom: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+
+  .markdown-preview h2 {
+    @apply text-2xl font-semibold mt-8 mb-3 pb-2;
+    border-bottom: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+
+  .markdown-preview h3 {
+    @apply text-xl font-semibold mt-6 mb-3;
+    color: hsl(var(--foreground));
+  }
+
+  .markdown-preview h4,
+  .markdown-preview h5,
+  .markdown-preview h6 {
+    @apply font-semibold mt-6 mb-2;
+    color: hsl(var(--foreground));
+  }
+
+  .markdown-preview p {
+    @apply mb-4;
+  }
+
+  .markdown-preview a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: opacity 0.2s;
+  }
+
+  .markdown-preview a:hover {
+    opacity: 0.8;
+  }
+
+  .markdown-preview strong {
+    @apply font-semibold;
+    color: hsl(var(--foreground));
+  }
+
+  .markdown-preview em {
+    @apply italic;
+  }
+
+  .markdown-preview code {
+    @apply px-1.5 py-0.5 rounded text-sm;
+    background: hsl(var(--code-bg));
+    color: hsl(var(--primary));
+    font-family: var(--font-mono);
+  }
+
+  .markdown-preview pre {
+    @apply rounded-lg p-4 mb-4 overflow-x-auto;
+    background: hsl(var(--code-bg)) !important;
+  }
+
+  .markdown-preview pre code {
+    @apply p-0 bg-transparent;
+    color: inherit;
+  }
+
+  .markdown-preview blockquote {
+    @apply pl-4 my-4 italic;
+    border-left: 3px solid hsl(var(--primary));
+    color: hsl(var(--muted-foreground));
+  }
+
+  .markdown-preview ul,
+  .markdown-preview ol {
+    @apply pl-6 mb-4;
+  }
+
+  .markdown-preview ul {
+    list-style-type: disc;
+  }
+
+  .markdown-preview ol {
+    list-style-type: decimal;
+  }
+
+  .markdown-preview li {
+    @apply mb-1;
+  }
+
+  .markdown-preview hr {
+    @apply my-8;
+    border-color: hsl(var(--border));
+  }
+
+  .markdown-preview table {
+    @apply w-full mb-4 border-collapse;
+  }
+
+  .markdown-preview th,
+  .markdown-preview td {
+    @apply px-4 py-2 text-left;
+    border: 1px solid hsl(var(--border));
+  }
+
+  .markdown-preview th {
+    @apply font-semibold;
+    background: hsl(var(--muted));
+  }
+
+  .markdown-preview img {
+    @apply max-w-full h-auto rounded-lg my-4;
+  }
+
+  .markdown-preview input[type="checkbox"] {
+    @apply mr-2;
+    accent-color: hsl(var(--primary));
+  }
+
+  /* Toolbar button style */
+  .toolbar-btn {
+    @apply px-3 py-2 rounded-md text-sm font-medium transition-all duration-200;
+    background: transparent;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .toolbar-btn:hover {
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
+  }
+
+  .toolbar-btn:active {
+    transform: scale(0.97);
+  }
+
+  .toolbar-btn-primary {
+    @apply toolbar-btn;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .toolbar-btn-primary:hover {
+    background: hsl(var(--primary) / 0.9);
+    color: hsl(var(--primary-foreground));
+  }
+
+  /* Panel header */
+  .panel-header {
+    @apply flex items-center justify-between px-4 py-3 border-b;
+    background: hsl(var(--toolbar-bg));
+    border-color: hsl(var(--border));
+  }
+
+  .panel-title {
+    @apply text-sm font-medium uppercase tracking-wider;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Split pane divider */
+  .pane-divider {
+    @apply w-1 cursor-col-resize transition-colors;
+    background: hsl(var(--border));
+  }
+
+  .pane-divider:hover {
+    background: hsl(var(--primary) / 0.5);
+  }
+
+  /* Stats badge */
+  .stats-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium;
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Fade in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+}
