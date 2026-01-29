@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -162,6 +162,8 @@ For support, contact api-support@example.com
 `
 };
 
+const CACHE_KEY = 'markdown-magic:cached-md-v1';
+
 interface MarkdownEditorProps {
   className?: string;
 }
@@ -178,6 +180,31 @@ export const MarkdownEditor = ({ className }: MarkdownEditorProps) => {
   const wordCount = markdown.trim() ? markdown.trim().split(/\s+/).length : 0;
   const charCount = markdown.length;
   const lineCount = markdown.split('\n').length;
+
+  useEffect(() => {
+    const cached = window.localStorage.getItem(CACHE_KEY);
+    if (cached && cached.trim().length > 0) {
+      setMarkdown(cached);
+      toast.success('Restored cached markdown');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (markdown.trim().length === 0) {
+      window.localStorage.removeItem(CACHE_KEY);
+      return;
+    }
+
+    const saveTimer = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(CACHE_KEY, markdown);
+      } catch {
+        // Ignore quota errors.
+      }
+    }, 300);
+
+    return () => window.clearTimeout(saveTimer);
+  }, [markdown]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -339,6 +366,7 @@ ${htmlContent}
 
   const handleClear = useCallback(() => {
     setMarkdown('');
+    window.localStorage.removeItem(CACHE_KEY);
     toast.success('Editor cleared!');
   }, []);
 
@@ -363,10 +391,10 @@ ${htmlContent}
   }, []);
 
   // Add fullscreen event listener
-  useState(() => {
+  useEffect(() => {
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
-  });
+  }, [handleFullscreenChange]);
 
   // Resizable panel handlers
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -389,7 +417,7 @@ ${htmlContent}
   }, []);
 
   // Add mouse event listeners for resizing
-  useState(() => {
+  useEffect(() => {
     if (isResizing) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
@@ -398,7 +426,7 @@ ${htmlContent}
         document.removeEventListener('mouseup', handleMouseUp);
       };
     }
-  });
+  }, [isResizing, handleMouseMove, handleMouseUp]);
 
   return (
     <div 
